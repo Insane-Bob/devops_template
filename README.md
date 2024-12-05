@@ -22,7 +22,7 @@
 `cd prometheus`
 `nano | vim main.yml`
 
-### Ajouter ce contenu dans le fichier main.yml (ajouter des - devant name une fois dans votre fichier)
+### Ajouter ce contenu dans le fichier tasks/main.yml (ajouter des - devant name une fois dans votre fichier)
 
 name: Install dependencies
   become: true
@@ -55,3 +55,25 @@ install_prometheus_version: "2.45.0"
 install_prometheus_port: 9090
 install_prometheus_data_dir: "/var/lib/prometheus"
 install_prometheus_download_url: "https://github.com/prometheus/prometheus/releases/download/v%7B%7B install_prometheus_version }}/prometheus-{{ install_prometheus_version }}.linux-amd64.tar.gz"`
+
+### Créer à la racine du dossier ansible un fichier ansible.cfg
+[defaults]
+
+host_key_checking = False
+forks = 40
+roles_path = ../roles
+inventory = ../inventory/hosts
+
+[ssh_connection]
+ssh_args = -o ControlMaster=auto -o ControlPersist=60s
+
+### Créer un fichier infra.yml dans le dossier playbooks
+name: Playbook to configure prometheus
+hosts: monitoring
+become: true
+roles:
+  - liste de vos roles
+
+
+### Lancer notre playblook grâce à la commande
+`ansible-playbook infra.yml`
