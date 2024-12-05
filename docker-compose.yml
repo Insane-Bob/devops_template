@@ -3,6 +3,7 @@ services:
     build:
       context: .
       dockerfile: jenkins.Dockerfile
+    image: ilyam/jenkins
     container_name: jenkins
     ports:
       - "8080:8080"
@@ -11,9 +12,10 @@ services:
       mynetwork:
         ipv4_address: 172.30.0.2
     volumes:
-      - ansible_data:/home/ansible
+      - ./ansible_data:/etc/ansible
 
   debian:
+    image: ilyam/debian
     build:
       context: .
       dockerfile: debian.Dockerfile
