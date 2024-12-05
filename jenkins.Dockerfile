@@ -1,29 +1,34 @@
-FROM jenkins/jenkins:latest
+FROM jenkins/jenkins:lts
 
-# Switch to root user to install dependencies
+# Passer à l'utilisateur root pour installer les dépendances
 USER root
 
-# Install Ansible & OpenSSH server
+# Créer un nouvel utilisateur "ansible"
+ARG USERNAME=ansible
+RUN useradd -m -s /bin/bash ${USERNAME} && \
+    usermod -aG sudo ${USERNAME}
+
+# Installer Ansible et OpenSSH client
 RUN apt-get update && apt-get install -y \
     ansible \
     openssh-client \
     && apt-get clean
 
-# Create the .ssh directory if it does not exist
-RUN mkdir -p /var/jenkins_home/.ssh
-
-# Copy public key to authorized_keys for SSH access
-COPY id_rsa /var/jenkins_home/.ssh/id_rsa
-
-# Set the correct permissions and ownership
-RUN chmod 600 /var/jenkins_home/.ssh/id_rsa && \
+# Configurer le répertoire SSH pour Jenkins
+RUN mkdir -p /var/jenkins_home/.ssh && \
+    chmod 700 /var/jenkins_home/.ssh && \
     chown -R jenkins:jenkins /var/jenkins_home/.ssh
 
-# SSH configuration to disable strict host key checking
+# Copier la clé privée dans le conteneur
+COPY id_rsa /var/jenkins_home/.ssh/id_rsa
+RUN chmod 600 /var/jenkins_home/.ssh/id_rsa && \
+    chown jenkins:jenkins /var/jenkins_home/.ssh/id_rsa
+
+# Configurer SSH pour ignorer les vérifications des clés hôtes
 RUN echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config
 
-# Switch back to Jenkins user
+# Retourner à l'utilisateur Jenkins
 USER jenkins
 
-# Expose the necessary port for SSH
+# Exposer le port SSH
 EXPOSE 22

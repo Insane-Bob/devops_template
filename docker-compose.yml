@@ -10,6 +10,8 @@ services:
     networks:
       mynetwork:
         ipv4_address: 172.30.0.2
+    volumes:
+      - ansible_data:/home/ansible
 
   debian:
     build:
