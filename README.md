@@ -22,9 +22,9 @@
 `cd prometheus`
 `nano | vim main.yml`
 
-### Ajouter ce contenu dans le fichier main.yml
+### Ajouter ce contenu dans le fichier main.yml (ajouter des - devant name une fois dans votre fichier)
 
-- name: Install dependencies
+name: Install dependencies
   become: true
   ansible.buildin.apt:
     name:
@@ -33,7 +33,7 @@
       - adduser
       - libfontconfig
 
-- name: Create Prometheus user
+name: Create Prometheus user
   become: true
   ansible.buildin.user:
     name: prometheus
@@ -41,7 +41,7 @@
     system: true
     create_home: false
 
-- name: Download Prometheus
+name: Download Prometheus
   become: true
   ansible.buildin.get_url:
     url: "{{ install_prometheus_download_url }}"
@@ -50,7 +50,8 @@
 
 
 ### Ajouter ce contenu dans le dossier defaults/main.yml
-`install_prometheus_version: "2.45.0"
+`
+install_prometheus_version: "2.45.0"
 install_prometheus_port: 9090
 install_prometheus_data_dir: "/var/lib/prometheus"
 install_prometheus_download_url: "https://github.com/prometheus/prometheus/releases/download/v%7B%7B install_prometheus_version }}/prometheus-{{ install_prometheus_version }}.linux-amd64.tar.gz"`
